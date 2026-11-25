@@ -4,9 +4,7 @@ import { Check, AlertCircle, Info, X } from 'lucide-react';
 export default function Toast({ toast, onClose }) {
   useEffect(() => {
     if (!toast) return;
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3500);
+    const timer = setTimeout(onClose, 3500);
     return () => clearTimeout(timer);
   }, [toast, onClose]);
 
@@ -15,43 +13,43 @@ export default function Toast({ toast, onClose }) {
   const isSuccess = toast.type !== 'error' && toast.type !== 'info';
 
   return (
-    <div className="absolute top-12 left-3 right-3 z-50 animate-in slide-in-from-top-4 fade-in duration-300 pointer-events-auto">
-      <div className="bg-[#18181C]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-2xl flex items-center justify-between gap-3 text-sm">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div
-            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-              isSuccess
-                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                : toast.type === 'error'
-                ? 'bg-red-500/15 text-red-400 border border-red-500/30'
-                : 'bg-[#FF4D24]/15 text-[#FF4D24] border border-[#FF4D24]/30'
-            }`}
-          >
-            {isSuccess ? (
-              <Check className="w-3.5 h-3.5 stroke-[3]" />
-            ) : toast.type === 'error' ? (
-              <AlertCircle className="w-3.5 h-3.5 stroke-[2.5]" />
-            ) : (
-              <Info className="w-3.5 h-3.5 stroke-[2.5]" />
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-bold text-white text-xs tracking-wide uppercase leading-tight truncate">
-              {toast.title}
-            </p>
-            {toast.message && (
-              <p className="text-zinc-400 text-[11px] leading-snug mt-0.5 truncate">
-                {toast.message}
-              </p>
-            )}
-          </div>
+    <div
+      role="status"
+      aria-live="polite"
+      className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-3 pt-[calc(env(safe-area-inset-top,0px)+12px)] md:justify-end md:px-6 md:pt-6"
+    >
+      <div className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl border border-white/10 bg-[#18181C]/95 p-3 text-sm shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 duration-300">
+        <div
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+            isSuccess
+              ? 'border border-emerald-500/30 bg-emerald-500/15 text-emerald-400'
+              : toast.type === 'error'
+              ? 'border border-red-500/30 bg-red-500/15 text-red-400'
+              : 'border border-[#FF4D24]/30 bg-[#FF4D24]/15 text-[#FF4D24]'
+          }`}
+        >
+          {isSuccess ? (
+            <Check className="h-3.5 w-3.5 stroke-[3]" />
+          ) : toast.type === 'error' ? (
+            <AlertCircle className="h-3.5 w-3.5 stroke-[2.5]" />
+          ) : (
+            <Info className="h-3.5 w-3.5 stroke-[2.5]" />
+          )}
         </div>
-
+        <div className="min-w-0 flex-1 pt-0.5">
+          <p className="break-words text-xs font-bold uppercase leading-tight tracking-wide text-white">
+            {toast.title}
+          </p>
+          {toast.message && (
+            <p className="mt-0.5 break-words text-[11px] leading-snug text-zinc-400">{toast.message}</p>
+          )}
+        </div>
         <button
           onClick={onClose}
-          className="text-zinc-400 hover:text-white p-1 rounded-lg transition-colors shrink-0"
+          aria-label="Cerrar notificación"
+          className="shrink-0 rounded-lg p-1 text-zinc-400 transition-colors hover:text-white"
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </button>
       </div>
     </div>

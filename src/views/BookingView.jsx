@@ -79,7 +79,7 @@ export default function BookingView({
   const isFavorite = favoriteSedeId === currentSede.id;
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-3 pb-24 space-y-4 animate-in fade-in duration-200">
+    <div className="space-y-4 md:space-y-5">
       
       {/* 1. Minimalist Header: Sede Selector & My Bookings Pill */}
       <div className="flex items-center gap-2 pt-1">
@@ -111,19 +111,19 @@ export default function BookingView({
         >
           <CalendarDays className="w-3.5 h-3.5 stroke-[2.2]" />
           <span className="text-[10px] font-bold font-tabular tracking-wider uppercase">
-            Reservas ({bookings.length})
+            <span className="hidden min-[380px]:inline">Reservas </span>({bookings.length})
           </span>
         </button>
       </div>
 
       {/* 2. 7-Day Window Strip */}
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
-          <span>Próximos 7 días habilitados</span>
-          <span className="text-[#FF4D24] font-semibold">Reserva directa</span>
+        <div className="flex items-center justify-between gap-2 px-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
+          <span className="truncate">Próximos 7 días</span>
+          <span className="text-[#FF4D24] font-semibold shrink-0">Reserva directa</span>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
+        <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
           {DAYS_WINDOW.map((day) => {
             const isSelected = selectedDateId === day.id;
             const hasBooking = bookedDatesSet.has(day.id);
@@ -132,9 +132,10 @@ export default function BookingView({
               <button
                 key={day.id}
                 onClick={() => setSelectedDateId(day.id)}
-                className={`w-[52px] h-[72px] shrink-0 rounded-2xl flex flex-col items-center justify-center p-1 transition-all duration-150 relative ${
+                aria-pressed={isSelected}
+                className={`min-w-0 h-[68px] sm:h-[76px] rounded-xl sm:rounded-2xl flex flex-col items-center justify-center p-1 transition-all duration-150 relative active:scale-95 ${
                   isSelected
-                    ? 'bg-[#FF4D24] text-white shadow-glow-core scale-[1.02]'
+                    ? 'bg-[#FF4D24] text-white shadow-glow-core'
                     : 'bg-[#121215] hover:bg-[#18181C] text-zinc-300 border border-white/[0.06] hover:border-white/15'
                 }`}
               >
@@ -149,7 +150,7 @@ export default function BookingView({
 
                 {/* Day Number (e.g. 23) */}
                 <span
-                  className={`text-base font-black font-tabular my-0.5 ${
+                  className={`text-base sm:text-lg font-black font-tabular my-0.5 ${
                     isSelected ? 'text-white' : 'text-zinc-100'
                   }`}
                 >
@@ -178,36 +179,41 @@ export default function BookingView({
       </div>
 
       {/* 3. Grid Control Bar: Total slots + "Solo disponibles" toggle */}
-      <div className="flex items-center justify-between py-2.5 px-3 rounded-2xl bg-[#121215] border border-white/[0.06]">
-        <div className="flex items-center gap-1.5 text-xs text-zinc-300">
-          <Calendar className="w-3.5 h-3.5 text-[#FF4D24]" />
+      <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-2xl bg-[#121215] border border-white/[0.06]">
+        <div className="flex min-w-0 items-center gap-1.5 text-xs text-zinc-300 whitespace-nowrap">
+          <Calendar className="w-3.5 h-3.5 shrink-0 text-[#FF4D24]" />
           <span className="font-bold text-white tracking-wide uppercase text-[11px]">
             {selectedDateObj.dayName} {selectedDateObj.dateNum}
           </span>
           <span className="text-zinc-600">•</span>
-          <span className="text-[11px] font-tabular text-zinc-400">
+          <span className="text-[11px] font-tabular text-zinc-400 truncate">
             {displaySlots.length} turnos
           </span>
         </div>
 
         {/* Solo disponibles Toggle Switch */}
-        <label className="flex items-center gap-2 cursor-pointer select-none">
-          <span className="text-[11px] font-medium text-zinc-400">
-            Solo disponibles
+        <button
+          type="button"
+          role="switch"
+          aria-checked={onlyAvailable}
+          onClick={() => setOnlyAvailable(!onlyAvailable)}
+          className="flex shrink-0 items-center gap-2 py-1 select-none"
+        >
+          <span className="text-[11px] font-medium text-zinc-400 whitespace-nowrap">
+            <span className="hidden min-[380px]:inline">Solo </span>disponibles
           </span>
-          <div
-            onClick={() => setOnlyAvailable(!onlyAvailable)}
-            className={`w-8 h-4.5 rounded-full p-0.5 transition-colors relative ${
+          <span
+            className={`w-9 h-5 rounded-full p-0.5 transition-colors flex items-center ${
               onlyAvailable ? 'bg-[#FF4D24]' : 'bg-zinc-700'
             }`}
           >
-            <div
-              className={`w-3.5 h-3.5 rounded-full bg-white transition-transform ${
-                onlyAvailable ? 'translate-x-3.5' : 'translate-x-0'
+            <span
+              className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                onlyAvailable ? 'translate-x-4' : 'translate-x-0'
               }`}
             />
-          </div>
-        </label>
+          </span>
+        </button>
       </div>
 
       {/* 4. Redesigned Schedule Grid */}
@@ -227,7 +233,7 @@ export default function BookingView({
           return (
             <div
               key={slot.id}
-              className={`p-3.5 rounded-2xl border transition-all duration-200 flex items-center justify-between gap-3 ${
+              className={`p-3 sm:p-4 rounded-2xl border transition-all duration-200 flex items-center justify-between gap-2.5 sm:gap-4 ${
                 isUserBooked
                   ? 'bg-emerald-500/[0.06] border-emerald-500/35 shadow-sm'
                   : isFull
@@ -236,9 +242,9 @@ export default function BookingView({
               }`}
             >
               {/* Left Column: Hour & Details */}
-              <div className="min-w-[100px]">
+              <div className="w-[84px] sm:w-[120px] shrink-0 min-w-0">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-black font-tabular tracking-tight text-white">
+                  <span className="text-lg sm:text-xl font-black font-tabular tracking-tight text-white">
                     {slot.time}
                   </span>
                   <span className="text-[11px] font-semibold text-zinc-400">HS</span>
@@ -255,11 +261,11 @@ export default function BookingView({
               </div>
 
               {/* Center Column: Capacity status & Micro visual capacity bar */}
-              <div className="flex-1 px-1">
+              <div className="flex-1 min-w-0">
                 {isUserBooked ? (
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400 flex items-center gap-1">
-                      <Check className="w-3 h-3 stroke-[3]" /> Lugar asegurado
+                    <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400 flex items-center gap-1 whitespace-nowrap">
+                      <Check className="w-3 h-3 shrink-0 stroke-[3]" /> <span className="truncate">Asegurado</span>
                     </span>
                     <div className="w-full h-1 rounded-full bg-emerald-950/60 overflow-hidden">
                       <div className="h-full bg-emerald-400 rounded-full w-full" />
@@ -267,8 +273,8 @@ export default function BookingView({
                   </div>
                 ) : isFull ? (
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                      Sin cupo (12/12)
+                    <span className="block truncate text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                      Sin cupo
                     </span>
                     <div className="w-full h-1 rounded-full bg-zinc-800 overflow-hidden">
                       <div className="h-full bg-zinc-600 rounded-full w-full" />
@@ -276,11 +282,11 @@ export default function BookingView({
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between text-[11px] leading-none">
+                    <div className="flex items-center justify-between gap-1 text-[11px] leading-none whitespace-nowrap">
                       <span className="font-semibold text-emerald-400">
                         {slot.effectiveFreeSpots} libres
                       </span>
-                      <span className="text-[10px] text-zinc-500 font-tabular">
+                      <span className="hidden min-[360px]:inline text-[10px] text-zinc-500 font-tabular">
                         {slot.totalCapacity - slot.effectiveFreeSpots}/{slot.totalCapacity}
                       </span>
                     </div>
@@ -300,16 +306,11 @@ export default function BookingView({
                 {/* State 1: Booked by current user */}
                 {isUserBooked && (
                   <button
-                    onClick={() => onCancelBooking(slot.userBooking.id)}
-                    className="py-2 px-3 rounded-xl bg-emerald-500/10 hover:bg-red-500/15 border border-emerald-500/30 hover:border-red-500/30 text-emerald-400 hover:text-red-400 text-xs font-bold tracking-wider uppercase transition-all flex items-center gap-1 group/btn"
-                    title="Tocar para cancelar reserva"
+                    onClick={onOpenMyReservations}
+                    className="min-h-[40px] py-2 px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1"
+                    title="Gestionar o cancelar reserva"
                   >
-                    <span className="group-hover/btn:hidden flex items-center gap-1 text-[11px]">
-                      <Check className="w-3.5 h-3.5 stroke-[3]" /> Reservada
-                    </span>
-                    <span className="hidden group-hover/btn:inline text-[11px]">
-                      Cancelar
-                    </span>
+                    <Check className="w-3.5 h-3.5 stroke-[3]" /> Reservada
                   </button>
                 )}
 
@@ -323,7 +324,7 @@ export default function BookingView({
                         dateObj: selectedDateObj,
                       })
                     }
-                    className="py-2 px-3.5 rounded-xl bg-[#FF4D24] hover:bg-[#E53E17] text-white text-xs font-bold tracking-wider uppercase shadow-glow-core transition-all duration-150 active:scale-95"
+                    className="min-h-[40px] py-2 px-3.5 rounded-xl bg-[#FF4D24] hover:bg-[#E53E17] text-white text-xs font-bold tracking-wider uppercase shadow-glow-core transition-all duration-150 active:scale-95"
                   >
                     <span>Reservar</span>
                   </button>
@@ -333,7 +334,7 @@ export default function BookingView({
                 {isFull && (
                   <button
                     onClick={() => onToggleWaitlist(slot.id, slot.time, currentSede.name)}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all flex items-center gap-1 text-[11px] ${
+                    className={`min-h-[40px] py-2 px-2.5 rounded-xl font-semibold tracking-wider uppercase transition-all flex items-center gap-1 text-[11px] whitespace-nowrap ${
                       isWaitlisted
                         ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                         : 'bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-zinc-200 border border-white/10'
@@ -351,7 +352,7 @@ export default function BookingView({
         {displaySlots.length === 0 && (
           <div className="py-12 text-center rounded-2xl bg-[#121215]/50 border border-white/5 space-y-2">
             <Info className="w-5 h-5 text-zinc-500 mx-auto" />
-            <p className="text-xs font-medium text-zinc-400">
+            <p className="text-xs font-medium text-zinc-400 px-4">
               No hay turnos con cupos libres para este día con el filtro activo.
             </p>
             <button

@@ -1,0 +1,15 @@
+{
+  "name": "CORE Indoor",
+  "short_name": "CORE",
+  "description": "Reservá clases y entrená con rutinas on-demand de CORE Indoor.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#09090B",
+  "theme_color": "#09090B",
+  "lang": "es",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

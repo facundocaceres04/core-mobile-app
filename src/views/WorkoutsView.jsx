@@ -29,11 +29,11 @@ export default function WorkoutsView({
   }, [selectedCategory, search, favoriteWorkoutIds]);
 
   return (
-    <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-3 pb-24 space-y-4 animate-in fade-in duration-200">
+    <div className="space-y-4 md:space-y-5">
       
       {/* Top Header */}
-      <div className="flex items-center justify-between pt-1">
-        <div>
+      <div className="flex items-center justify-between gap-3 pt-1">
+        <div className="min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D24]" />
             <span className="text-[10px] font-bold tracking-[0.16em] text-[#FF4D24] uppercase">
@@ -45,7 +45,7 @@ export default function WorkoutsView({
           </h2>
         </div>
 
-        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-white/5 px-2.5 py-1 rounded-md border border-white/5 font-tabular">
+        <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-white/5 px-2.5 py-1 rounded-md border border-white/5 font-tabular">
           {filteredWorkouts.length} rutinas
         </span>
       </div>
@@ -57,20 +57,20 @@ export default function WorkoutsView({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por grupo muscular, calistenia, fuerza..."
-          className="w-full bg-[#121215] border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#FF4D24] transition-colors"
+          placeholder="Buscar rutinas, músculos..."
+          className="w-full bg-[#121215] border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-base text-white placeholder-zinc-500 focus:outline-none focus:border-[#FF4D24] transition-colors"
         />
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 md:mx-0 md:px-0 md:flex-wrap md:overflow-visible">
         {WORKOUT_CATEGORIES.map((cat) => {
           const isSelected = selectedCategory === cat.id;
           return (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`py-1.5 px-3 rounded-full text-[11px] font-bold tracking-wider uppercase whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 ${
+              className={`shrink-0 py-2 px-3.5 rounded-full text-[11px] font-bold tracking-wider uppercase whitespace-nowrap transition-all duration-150 flex items-center gap-1.5 ${
                 isSelected
                   ? 'bg-[#FF4D24] text-white shadow-glow-core'
                   : 'bg-[#121215] hover:bg-[#18181C] text-zinc-400 hover:text-zinc-200 border border-white/5'
@@ -84,7 +84,7 @@ export default function WorkoutsView({
       </div>
 
       {/* Routine Cards Grid */}
-      <div className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
         {filteredWorkouts.map((w) => {
           const isFav = favoriteWorkoutIds.includes(w.id);
 
@@ -92,7 +92,7 @@ export default function WorkoutsView({
             <div
               key={w.id}
               onClick={() => onOpenPlayer(w)}
-              className="rounded-2xl bg-[#121215] hover:bg-[#18181C] border border-white/[0.08] hover:border-white/20 transition-all overflow-hidden cursor-pointer group shadow-lg"
+              className="min-w-0 flex flex-col rounded-2xl bg-[#121215] hover:bg-[#18181C] border border-white/[0.08] hover:border-white/20 transition-all overflow-hidden cursor-pointer group shadow-lg"
             >
               {/* Card Thumbnail / Header */}
               <div
@@ -113,7 +113,8 @@ export default function WorkoutsView({
                       e.stopPropagation();
                       onToggleFavorite(w.id);
                     }}
-                    className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
+                    aria-label={isFav ? 'Quitar de guardados' : 'Guardar rutina'}
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
                       isFav
                         ? 'bg-[#FF4D24] text-white'
                         : 'bg-black/40 text-zinc-400 hover:text-white'
@@ -124,9 +125,9 @@ export default function WorkoutsView({
                 </div>
 
                 {/* Bottom row in thumbnail: Title & Play CTA */}
-                <div className="flex items-end justify-between z-10">
-                  <div>
-                    <span className="text-[9px] font-bold text-[#FF4D24] uppercase tracking-wider">
+                <div className="flex items-end justify-between gap-3 z-10">
+                  <div className="min-w-0">
+                    <span className="block truncate text-[9px] font-bold text-[#FF4D24] uppercase tracking-wider">
                       {w.subtitle}
                     </span>
                     <h3 className="text-sm font-black text-white tracking-wide uppercase leading-tight group-hover:text-[#FF4D24] transition-colors">
@@ -141,13 +142,13 @@ export default function WorkoutsView({
               </div>
 
               {/* Card Body details */}
-              <div className="p-3 space-y-2">
+              <div className="p-3 space-y-2 flex-1 flex flex-col justify-between">
                 <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
                   {w.description}
                 </p>
 
                 {/* Stats metadata */}
-                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] text-zinc-400 font-medium">
+                <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/5 text-[10px] text-zinc-400 font-medium whitespace-nowrap">
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-3 h-3 text-[#FF4D24]" />
                     <span className="font-semibold text-zinc-200">{w.duration}</span>
@@ -169,7 +170,7 @@ export default function WorkoutsView({
         })}
 
         {filteredWorkouts.length === 0 && (
-          <div className="py-16 text-center rounded-2xl bg-[#121215]/50 border border-white/5 space-y-2">
+          <div className="sm:col-span-2 py-16 px-4 text-center rounded-2xl bg-[#121215]/50 border border-white/5 space-y-2">
             <Dumbbell className="w-6 h-6 text-zinc-600 mx-auto" />
             <h4 className="text-xs font-bold text-white uppercase tracking-wider">No se encontraron rutinas</h4>
             <p className="text-xs text-zinc-500 max-w-xs mx-auto">
